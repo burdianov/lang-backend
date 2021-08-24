@@ -1,0 +1,85 @@
+##### Project 1 #####
+$ nest new project_name
+
+$ add to .prettierrc:
+  "endOfLine": "auto"
+
+$ yarn start:dev
+ 
+# restart server
+$ rs + enter
+
+# inside psql:
+$ \l    : list all databases
+$ create database mediumclone;
+$ \du   : display users
+$ create user user_name with encrypted password '123';
+$ grant all privileges on database database_name to user_name;
+
+$ \c database_name  : connect to database
+$ \dt   : display tables
+$ \d table_name     : display table fields
+$ INSERT INTO tags (name) VALUES ('dragons');
+$ SELECT * FROM tags;
+
+# Workflow
+$ yarn db:drop
+$ yarn db:migrate
+$ yarn db:seed
+
+
+##### Project 2 #####
+# add the following rules in .eslintrc.js
+	'@typescript-eslint/no-empty-function': 'on',
+	'@typescript-eslint/no-non-null-assertion': 1,
+	'prettier/prettier': [
+		'error',
+		{
+			endOfLine: 'auto'
+		}
+	]
+
+# change trailingComma to 'none' in .prettierrc
+
+# inside tsconfig.json, in "compilerOptions" add:
+	"strict": true,
+	"strictPropertyInitialization": false,
+	"skipLibCheck": true,
+	"noImplicitAny": false
+
+# inside docker-compose convert indentation to spaces:
+	F1 -> Convert Indentation to Spaces -> Enter
+
+$ nest new
+
+$ npm run start:dev
+
+$ nest generate controller
+or
+$ nest g co
+$ nest g co --no-spec
+
+# use --dry-run to view only the result
+$ nest g co controller_name --dry-run
+
+$ nest generate service
+or
+$ nest g s
+
+$ nest g module module_name
+$ nest g mo module_name
+
+$ nest g class coffees/dto/create-coffee.dto --no-spec
+
+$ git checkout -b branch_name
+$ git checkout master
+
+$ docker-compose up -d
+
+$ npx typeorm migration:create -n CoffeeRefactor
+$ npx typeorm migration:run
+$ npx typeorm migration:revert
+$ npx typeorm migration:generate -n SchemaSync
+
+$ nest g filter common/filters/http-exception
+$ nest g guard common/guards/api-key
