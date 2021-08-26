@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
@@ -27,9 +28,9 @@ export class UserController {
 
   @Post('login')
   async login(
+    @Res({ passthrough: false }) response: Response,
     @Body('user') loginUserDto: LoginUserDto
-  ): Promise<UserResponseInterface> {
-    const user = await this.userService.login(loginUserDto);
-    return this.userService.buildUserResponse(user);
+  ): Promise<any> {
+    return this.userService.login(loginUserDto, response);
   }
 }

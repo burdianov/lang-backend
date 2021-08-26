@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+import { Response } from 'express';
 
 import { UserEntity } from '@app/user/user.entity';
 import { UserResponseInterface } from '@app/user/types/userResponse.interface';
@@ -96,7 +97,7 @@ export class UserService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  async login(loginUserDto: LoginUserDto, response: Response): Promise<any> {
     const errorResponse = {
       errors: {
         'email or password': 'is invalid'
@@ -114,16 +115,21 @@ export class UserService {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    const isPasswordCorrect = await bcrypt.compare(
-      loginUserDto.password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(loginUserDto.password, user.password);
 
-    if (!isPasswordCorrect) {
+    if (!isMatch) {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    return user;
+    const refreshToken = createRefreshToken({ id: user.id });
+
+    response.cookie('refreshtoken', refreshToken, {
+      httpOnly: true,
+      path: '/user/refresh-token',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    return response.json({ msg: 'Login success' });
   }
 
   generateJwt(user: UserType): string {
@@ -163,7 +169,7 @@ const createAccessToken = (payload: CreateUserDto): string => {
   });
 };
 
-const createRefreshToken = (payload: CreateUserDto): string => {
+const createRefreshToken = (payload: { id: number }): string => {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: '7d'
   });
