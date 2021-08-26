@@ -17,6 +17,14 @@ export class UserController {
     // return this.userService.buildUserResponse(user);
   }
 
+  @Post('activation')
+  async activateEmail(
+    @Body('activationToken') activationToken: string
+  ): Promise<any> {
+    const result = await this.userService.activateEmail(activationToken);
+    return result;
+  }
+
   @Post('login')
   async login(
     @Body('user') loginUserDto: LoginUserDto

@@ -5,8 +5,6 @@ import { Repository } from 'typeorm';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// import { JWT_SECRET } from '@app/lib/config';
-
 import { UserEntity } from '@app/user/user.entity';
 import { UserResponseInterface } from '@app/user/types/userResponse.interface';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
@@ -65,8 +63,37 @@ export class UserService {
     sendEmail(this.configService, email, url, txt);
 
     return { msg: 'Register Success! Please activate your account.' };
+  }
 
-    // return await this.userRepository.save(newUser);
+  async activateEmail(activationToken: string) {
+    try {
+      const activationTokenSecret = this.configService.get(
+        'activationTokenSecret'
+      );
+      const user = jwt.verify(activationToken, activationTokenSecret);
+
+      const { username, email, password } = user;
+
+      const check = await this.userRepository.findOne({
+        email
+      });
+
+      if (check) {
+        throw new HttpException(
+          'This email has already been registered',
+          HttpStatus.UNPROCESSABLE_ENTITY
+        );
+      }
+
+      const newUser = new CreateUserDto();
+      newUser.username = username;
+      newUser.email = email;
+      newUser.password = password;
+
+      return await this.userRepository.save(newUser);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
