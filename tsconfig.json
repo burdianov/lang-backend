@@ -14,9 +14,7 @@
     "skipLibCheck": true,
     "noImplicitAny": false,
     "paths": {
-      "@app/*": [
-        "./src/*"
-      ]
+      "@app/*": ["./src/*"]
     }
   }
 }
