@@ -10,5 +10,5 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @Length(6, 20, { message: 'must contain between 6 and 20 characters' })
-  readonly password: string;
+  password: string;
 }

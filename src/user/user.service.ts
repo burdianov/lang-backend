@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import bcrypt from 'bcrypt';
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // import { JWT_SECRET } from '@app/lib/config';
@@ -49,8 +49,12 @@ export class UserService {
       throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    const newUser = new Object();
+    const newUser = new CreateUserDto();
     Object.assign(newUser, createUserDto);
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    newUser.password = passwordHash;
 
     const activationToken = createActivationToken(newUser);
 
@@ -116,19 +120,23 @@ export class UserService {
   }
 }
 
-const createActivationToken = (payload: Object): string => {
-  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
-    expiresIn: '5m'
-  });
+const createActivationToken = (payload: CreateUserDto): string => {
+  return jwt.sign(
+    JSON.parse(JSON.stringify(payload)),
+    process.env.ACTIVATION_TOKEN_SECRET,
+    {
+      expiresIn: '5m'
+    }
+  );
 };
 
-const createAccessToken = (payload: Object): string => {
+const createAccessToken = (payload: CreateUserDto): string => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '15m'
   });
 };
 
-const createRefreshToken = (payload: Object): string => {
+const createRefreshToken = (payload: CreateUserDto): string => {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: '7d'
   });
