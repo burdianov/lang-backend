@@ -5,6 +5,9 @@ import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
 import { LoginUserDto } from '@app/user/dto/loginUser.dto';
 import { User } from './decorators/user.decorator';
+import { UserEntity } from '@app/user/user.entity';
+import { UserResponseInterface } from './types/userResponse.interface';
+import { UserType } from './types/user.type';
 
 @Controller('user')
 export class UserController {
@@ -55,5 +58,10 @@ export class UserController {
     @Res() response: Response
   ): Promise<any> {
     return this.userService.resetPassword(userId, password, response);
+  }
+
+  @Get('info')
+  async getUserInfo(@User() user: UserEntity): Promise<UserType> {
+    return user;
   }
 }

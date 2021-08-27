@@ -23,9 +23,15 @@ import { AuthMiddleware } from './user/middleware/auth.middleware';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes({
-      path: 'user/reset-password',
-      method: RequestMethod.ALL
-    });
+    consumer.apply(AuthMiddleware).forRoutes(
+      {
+        path: 'user/reset-password',
+        method: RequestMethod.ALL
+      },
+      {
+        path: 'user/info',
+        method: RequestMethod.ALL
+      }
+    );
   }
 }
