@@ -215,6 +215,18 @@ export class UserService {
     }
   }
 
+  async updateUser() {
+    throw new Error('Method not implemented.');
+  }
+
+  async updateUserRole() {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteUser() {
+    throw new Error('Method not implemented.');
+  }
+
   generateJwt(user: UserType): string {
     return jwt.sign(
       {

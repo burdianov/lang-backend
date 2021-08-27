@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Req,
+  Res
+} from '@nestjs/common';
 import { Request, response, Response } from 'express';
 
 import { UserService } from '@app/user/user.service';
@@ -73,5 +82,20 @@ export class UserController {
   @Get('logout')
   async logout(@Res() response: Response) {
     return this.userService.logout(response);
+  }
+
+  @Patch('update')
+  async updateUser() {
+    return this.userService.updateUser();
+  }
+
+  @Patch('update-role')
+  async updateUserRole() {
+    return this.userService.updateUser();
+  }
+
+  @Delete('delete')
+  async deleteUser() {
+    return this.userService.deleteUser();
   }
 }
