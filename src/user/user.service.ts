@@ -158,6 +158,31 @@ export class UserService {
     }
   }
 
+  async forgotPassword(email: string, response: Response): Promise<any> {
+    try {
+      const user = await this.userRepository.findOne({ email });
+      if (!user) {
+        return response
+          .status(400)
+          .json({ msg: 'This email is not registered' });
+      }
+
+      const accessToken = createAccessToken({ id: user.id });
+      const url = `${this.configService.get(
+        'clientUrl'
+      )}/user/reset-password/${accessToken}`;
+      const txt = 'Reset your password';
+
+      sendEmail(this.configService, email, url, txt);
+
+      response.json({ msg: 'Please check your email to reset the password' });
+    } catch (err) {
+      if (err) {
+        return response.status(500).json({ msg: err.message });
+      }
+    }
+  }
+
   generateJwt(user: UserType): string {
     return jwt.sign(
       {
@@ -189,7 +214,7 @@ const createActivationToken = (payload: CreateUserDto): string => {
   );
 };
 
-const createAccessToken = (payload: { id: string }): string => {
+const createAccessToken = (payload: { id: number }): string => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '15m'
   });

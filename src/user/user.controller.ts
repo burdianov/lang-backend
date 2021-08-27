@@ -35,7 +35,18 @@ export class UserController {
   }
 
   @Post('refresh-token')
-  async getAccessToken(@Req() request: Request, @Res() response: Response) {
+  async getAccessToken(
+    @Req() request: Request,
+    @Res() response: Response
+  ): Promise<any> {
     return this.userService.getAccessToken(request.cookies, response);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body('email') email: string,
+    @Res() response: Response
+  ): Promise<any> {
+    return this.userService.forgotPassword(email, response);
   }
 }
