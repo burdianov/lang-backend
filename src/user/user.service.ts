@@ -132,6 +132,32 @@ export class UserService {
     return response.json({ msg: 'Login success' });
   }
 
+  async getAccessToken(cookies: any, response: Response): Promise<any> {
+    try {
+      const refreshToken = cookies.refreshtoken;
+
+      if (!refreshToken) {
+        throw new HttpException('Please login', HttpStatus.BAD_REQUEST);
+      }
+
+      jwt.verify(
+        refreshToken,
+        this.configService.get('refreshTokenSecret'),
+        (err, user) => {
+          if (err) {
+            return response.status(400).json({
+              msg: 'Please login'
+            });
+          }
+          const accessToken = createAccessToken({ id: user.id });
+          return response.json({ accessToken });
+        }
+      );
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   generateJwt(user: UserType): string {
     return jwt.sign(
       {
@@ -163,7 +189,7 @@ const createActivationToken = (payload: CreateUserDto): string => {
   );
 };
 
-const createAccessToken = (payload: CreateUserDto): string => {
+const createAccessToken = (payload: { id: string }): string => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '15m'
   });

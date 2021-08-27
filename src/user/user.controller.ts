@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
@@ -32,5 +32,10 @@ export class UserController {
     @Body('user') loginUserDto: LoginUserDto
   ): Promise<any> {
     return this.userService.login(loginUserDto, response);
+  }
+
+  @Post('refresh-token')
+  async getAccessToken(@Req() request: Request, @Res() response: Response) {
+    return this.userService.getAccessToken(request.cookies, response);
   }
 }
