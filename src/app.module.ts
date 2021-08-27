@@ -31,6 +31,10 @@ export class AppModule {
       {
         path: 'user/info',
         method: RequestMethod.ALL
+      },
+      {
+        path: 'user/all-info',
+        method: RequestMethod.ALL
       }
     );
   }

@@ -202,6 +202,19 @@ export class UserService {
     }
   }
 
+  getAllUsersInfo() {
+    throw new Error('Method not implemented.');
+  }
+
+  async logout(response: Response) {
+    try {
+      response.clearCookie('refreshtoken', { path: '/user/refresh-token' });
+      return response.json({ msg: 'Logged out' });
+    } catch (err) {
+      return response.status(500).json({ msg: err.message });
+    }
+  }
+
   generateJwt(user: UserType): string {
     return jwt.sign(
       {

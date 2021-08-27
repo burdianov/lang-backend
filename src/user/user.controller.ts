@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
@@ -63,5 +63,15 @@ export class UserController {
   @Get('info')
   async getUserInfo(@User() user: UserEntity): Promise<UserType> {
     return user;
+  }
+
+  @Get('all-info')
+  async getAllUsersInfo() {
+    return this.userService.getAllUsersInfo();
+  }
+
+  @Get('logout')
+  async logout(@Res() response: Response) {
+    return this.userService.logout(response);
   }
 }
