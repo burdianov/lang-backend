@@ -183,6 +183,25 @@ export class UserService {
     }
   }
 
+  async resetPassword(
+    userId: number,
+    password: string,
+    response: Response
+  ): Promise<any> {
+    try {
+      const passwordHash = await bcrypt.hash(password, 12);
+
+      const user = await this.findById(userId);
+      user.password = passwordHash;
+
+      this.userRepository.save(user);
+
+      response.json({ msg: 'Password was reset successfully' });
+    } catch (err) {
+      return response.status(500).json({ msg: err.message });
+    }
+  }
+
   generateJwt(user: UserType): string {
     return jwt.sign(
       {
@@ -201,6 +220,10 @@ export class UserService {
         token: this.generateJwt(user)
       }
     };
+  }
+
+  findById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne(id);
   }
 }
 

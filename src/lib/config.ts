@@ -1,6 +1,5 @@
 export const config = () => {
   return {
-    jwtSecret: process.env.JWT_SECRET,
     clientUrl: process.env.CLIENT_URL,
     oAuthPlaygroundUrl: process.env.OAUTH_PLAYGROUND_URL,
     activationTokenSecret: process.env.ACTIVATION_TOKEN_SECRET,

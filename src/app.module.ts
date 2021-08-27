@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
@@ -7,6 +7,7 @@ import { AppController } from '@app/app.controller';
 import { AppService } from '@app/app.service';
 import { UserModule } from '@app/user/user.module';
 import { config } from '@app/lib/config';
+import { AuthMiddleware } from './user/middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -20,4 +21,11 @@ import { config } from '@app/lib/config';
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes({
+      path: 'user/reset-password',
+      method: RequestMethod.ALL
+    });
+  }
+}

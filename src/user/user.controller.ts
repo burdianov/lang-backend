@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/createUser.dto';
-import { UserResponseInterface } from '@app/user/types/userResponse.interface';
 import { LoginUserDto } from '@app/user/dto/loginUser.dto';
+import { User } from './decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -14,8 +14,6 @@ export class UserController {
   async register(@Body('user') createUserDto: CreateUserDto): Promise<any> {
     const result = await this.userService.register(createUserDto);
     return result;
-    // const user = await this.userService.register(createUserDto);
-    // return this.userService.buildUserResponse(user);
   }
 
   @Post('activation')
@@ -48,5 +46,14 @@ export class UserController {
     @Res() response: Response
   ): Promise<any> {
     return this.userService.forgotPassword(email, response);
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @User('id') userId: number,
+    @Body('password') password: string,
+    @Res() response: Response
+  ): Promise<any> {
+    return this.userService.resetPassword(userId, password, response);
   }
 }
